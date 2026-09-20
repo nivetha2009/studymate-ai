@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyMate AI — Learn smarter. Prepare better. Score higher.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --paper:#F6F5F0;
+  --paper-raised:#FFFFFF;
+  --ink:#1C2130;
+  --ink-soft:#565B6B;
+  --rule:#DFDCD1;
+  --plum:#4B3F72;
+  --plum-deep:#372F55;
+  --plum-tint:#ECE9F6;
+  --forest:#2F6E5B;
+  --forest-tint:#E4F0EC;
+  --rust:#AE4B30;
+  --rust-tint:#F7E7E1;
+  --gold:#B08A3E;
+  --shadow: 0 1px 2px rgba(28,33,48,.06), 0 6px 20px rgba(28,33,48,.06);
+  --radius-card: 14px;
+  --radius-sm: 8px;
+  --font-head: 'Lora', Georgia, serif;
+  --font-body: 'IBM Plex Sans', -apple-system, Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#181B24;
+    --paper-raised:#20232E;
+    --ink:#EEEDE7;
+    --ink-soft:#A6A9B6;
+    --rule:#343947;
+    --plum:#9689D1;
+    --plum-deep:#B6ABE3;
+    --plum-tint:#262A3D;
+    --forest:#6FBFA4;
+    --forest-tint:#1E2C28;
+    --rust:#E08363;
+    --rust-tint:#332420;
+    --gold:#D9B463;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#181B24;
+  --paper-raised:#20232E;
+  --ink:#EEEDE7;
+  --ink-soft:#A6A9B6;
+  --rule:#343947;
+  --plum:#9689D1;
+  --plum-deep:#B6ABE3;
+  --plum-tint:#262A3D;
+  --forest:#6FBFA4;
+  --forest-tint:#1E2C28;
+  --rust:#E08363;
+  --rust-tint:#332420;
+  --gold:#D9B463;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:var(--font-head); margin:0; color:var(--ink); font-weight:600;}
+p{margin:0;}
+a{color:inherit;}
+button{font-family:var(--font-body); cursor:pointer;}
+:focus-visible{outline:2px solid var(--plum); outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+
+.hidden{display:none !important;}
+.container{max-width:1100px; margin:0 auto; padding:0 24px;}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:12px 22px; border-radius:999px; border:1px solid transparent;
+  font-size:15px; font-weight:600; text-decoration:none; transition:transform .15s ease, background .15s ease;
+  white-space:nowrap;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--plum); color:#fff;}
+.btn-primary:hover{background:var(--plum-deep);}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--rule);}
+.btn-ghost:hover{border-color:var(--plum);}
+.btn-sm{padding:8px 14px; font-size:13px; border-radius:999px;}
+.btn-block{width:100%;}
+.chip-btn{
+  padding:7px 14px; border-radius:999px; border:1px solid var(--rule); background:var(--paper-raised);
+  color:var(--ink-soft); font-size:13px; font-weight:600; transition:.15s;
+}
+.chip-btn:hover{border-color:var(--plum); color:var(--plum);}
+.chip-btn.active{background:var(--plum); border-color:var(--plum); color:#fff;}
+
+/* ============ APP SHELL ============ */
+#app{min-height:100vh;}
+.shell{display:flex; min-height:100vh;}
+.sidebar{
+  width:236px; flex-shrink:0; background:var(--paper-raised); border-right:1px solid var(--rule);
+  display:flex; flex-direction:column; padding:20px 14px; position:sticky; top:0; height:100vh;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:6px 10px 22px; cursor:pointer;}
+.brand-mark{
+  width:34px;height:34px;border-radius:9px;background:var(--plum);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:700;font-size:16px;flex-shrink:0;
+}
+.brand-name{font-family:var(--font-head); font-weight:700; font-size:17px;}
+.navlist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; flex:1;}
+.navlink{
+  display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:var(--radius-sm);
+  color:var(--ink-soft); font-size:14.5px; font-weight:500; text-decoration:none; border:none; background:none; width:100%; text-align:left;
+}
+.navlink .ic{font-size:17px; width:20px; text-align:center;}
+.navlink:hover{background:var(--plum-tint); color:var(--plum);}
+.navlink.active{background:var(--plum-tint); color:var(--plum-deep); font-weight:700;}
+.sidebar-foot{border-top:1px solid var(--rule); padding-top:12px; margin-top:8px;}
+.profile-row{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:var(--radius-sm);}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--forest-tint); color:var(--forest); display:flex;align-items:center;justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;}
+.profile-name{font-size:13.5px; font-weight:600;}
+.profile-sub{font-size:11.5px; color:var(--ink-soft);}
+
+.main{flex:1; min-width:0;}
+.topbar{
+  display:none; align-items:center; justify-content:space-between; padding:14px 18px;
+  background:var(--paper-raised); border-bottom:1px solid var(--rule); position:sticky; top:0; z-index:20;
+}
+.hamburger{background:none;border:none;font-size:22px;color:var(--ink);padding:4px 8px;}
+.page{padding:32px 36px 80px; max-width:960px;}
+.page-head{margin-bottom:26px;}
+.eyebrow-free{color:var(--ink-soft); font-size:14.5px; margin-top:4px;}
+
+/* ============ CARDS ============ */
+.card{background:var(--paper-raised); border:1px solid var(--rule); border-radius:var(--radius-card); box-shadow:var(--shadow); padding:22px;}
+.grid2{display:grid; grid-template-columns:1.3fr 1fr; gap:18px;}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+.stack{display:flex; flex-direction:column; gap:18px;}
+
+/* ============ PROGRESS BAR ============ */
+.progress-track{height:10px; border-radius:999px; background:var(--plum-tint); overflow:hidden;}
+.progress-fill{height:100%; background:var(--plum); border-radius:999px; transition:width .6s ease;}
+.progress-fill.forest{background:var(--forest);}
+.progress-label-row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+.big-num{font-family:var(--font-head); font-size:34px; font-weight:700;}
+
+/* ============ CHECKLIST ============ */
+.check-row{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--rule);}
+.check-row:last-child{border-bottom:none;}
+.checkbox{
+  width:20px;height:20px;border-radius:6px;border:1.6px solid var(--rule); flex-shrink:0; cursor:pointer;
+  display:flex;align-items:center;justify-content:center; background:var(--paper-raised); transition:.15s;
+}
+.checkbox.checked{background:var(--forest); border-color:var(--forest); color:#fff; font-size:12px;}
+.check-text{font-size:14.5px;}
+.check-text.done{color:var(--ink-soft); text-decoration:line-through;}
+
+/* ============ TAG / PILL ============ */
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 11px; border-radius:999px; font-size:12.5px; font-weight:600;}
+.pill-weak{background:var(--rust-tint); color:var(--rust);}
+.pill-strong{background:var(--forest-tint); color:var(--forest);}
+.pill-neutral{background:var(--plum-tint); color:var(--plum-deep);}
+
+/* ============ LANDING PAGE ============ */
+.landing{background:var(--paper);}
+.landing-nav{display:flex; align-items:center; justify-content:space-between; padding:22px 0;}
+.landing-nav-links{display:flex; gap:28px; font-size:14.5px; font-weight:600; color:var(--ink-soft);}
+.hero{padding:64px 0 40px; display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center;}
+.hero h1{font-size:52px; line-height:1.08; letter-spacing:-0.5px;}
+.hero .tagline-underline{position:relative; white-space:nowrap;}
+.hero .tagline-underline svg{position:absolute; left:0; bottom:-6px; width:100%; height:14px;}
+.hero-sub{margin-top:20px; font-size:17px; color:var(--ink-soft); max-width:480px; line-height:1.6;}
+.hero-ctas{display:flex; gap:14px; margin-top:30px; flex-wrap:wrap;}
+.hero-art{position:relative; height:380px;}
+.floaty-card{
+  position:absolute; background:var(--paper-raised); border:1px solid var(--rule); border-radius:14px; box-shadow:var(--shadow);
+  padding:16px; width:220px;
+}
+.floaty-1{top:10px; left:10px; transform:rotate(-3deg);}
+.floaty-2{top:150px; right:0; transform:rotate(2deg); width:200px;}
+.floaty-3{bottom:0; left:60px; transform:rotate(-1deg); width:230px;}
+.floaty-tag{font-size:11px; font-weight:700; color:var(--plum); text-transform:uppercase; letter-spacing:.04em;}
+.floaty-title{font-family:var(--font-head); font-weight:600; margin-top:4px; font-size:15px;}
+.floaty-body{font-size:12.5px; color:var(--ink-soft); margin-top:6px; line-height:1.5;}
+
+.section-label{font-size:13px; font-weight:700; color:var(--plum); margin-bottom:10px;}
+.features{padding:60px 0; display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+.feature-card{border:1px solid var(--rule); border-radius:14px; padding:22px; background:var(--paper-raised);}
+.feature-emoji{font-size:26px;}
+.feature-card h3{font-size:17px; margin-top:12px;}
+.feature-card p{font-size:13.5px; color:var(--ink-soft); margin-top:8px; line-height:1.55;}
+
+.how{padding:50px 0 70px;}
+.how-steps{display:grid; grid-template-columns:repeat(3,1fr); gap:22px 28px; margin-top:26px;}
+.how-step{display:flex; gap:14px;}
+.how-num{font-family:var(--font-mono); font-size:13px; color:var(--plum); border:1.4px solid var(--plum); border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.how-step p{font-size:14px; padding-top:4px;}
+
+.cta-band{margin:20px 0 70px; background:var(--plum); border-radius:20px; padding:50px 40px; text-align:center; color:#fff;}
+.cta-band h2{color:#fff; font-size:30px;}
+.cta-band .btn-primary{background:#fff; color:var(--plum-deep); margin-top:22px;}
+.cta-band .btn-primary:hover{background:var(--paper);}
+.landing-foot{border-top:1px solid var(--rule); padding:26px 0 50px; color:var(--ink-soft); font-size:13px; display:flex; justify-content:space-between;}
+
+/* ============ AI TUTOR ============ */
+.chat-wrap{display:flex; flex-direction:column; height:calc(100vh - 64px);}
+.chat-scroll{flex:1; overflow-y:auto; padding:28px 36px; display:flex; flex-direction:column; gap:18px;}
+.msg{max-width:640px; display:flex; flex-direction:column; gap:8px;}
+.msg.user{align-self:flex-end; align-items:flex-end;}
+.msg.ai{align-self:flex-start;}
+.bubble{padding:14px 17px; border-radius:16px; font-size:14.5px; line-height:1.6;}
+.msg.user .bubble{background:var(--plum); color:#fff; border-radius:16px 16px 4px 16px;}
+.msg.ai .bubble{background:var(--paper-raised); border:1px solid var(--rule); border-radius:16px 16px 16px 4px;}
+.ai-label{font-size:11.5px; font-weight:700; color:var(--plum); text-transform:uppercase; letter-spacing:.04em; padding-left:2px;}
+.quick-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:2px;}
+.chat-input-bar{border-top:1px solid var(--rule); padding:16px 36px; background:var(--paper-raised); display:flex; gap:10px;}
+.chat-input-bar input{
+  flex:1; padding:13px 16px; border-radius:999px; border:1.4px solid var(--rule); background:var(--paper); color:var(--ink);
+  font-size:14.5px; font-family:var(--font-body);
+}
+.chat-input-bar input:focus{border-color:var(--plum);}
+.typing-dots span{display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--ink-soft); margin-right:3px; animation:blink 1.2s infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;} .typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;} 40%{opacity:1;}}
+.context-banner{margin:0 36px 0; margin-top:16px; padding:10px 14px; background:var(--forest-tint); color:var(--forest); border-radius:10px; font-size:13px; font-weight:600; display:flex; align-items:center; gap:8px;}
+
+/* ============ MATERIALS ============ */
+.upload-zone{
+  border:1.6px dashed var(--rule); border-radius:14px; padding:34px; text-align:center; background:var(--paper-raised);
+  cursor:pointer; transition:.15s;
+}
+.upload-zone:hover{border-color:var(--plum); background:var(--plum-tint);}
+.mat-card{display:flex; align-items:flex-start; gap:14px; padding:18px; margin-bottom:12px;}
+.mat-icon{width:42px;height:42px;border-radius:10px;background:var(--plum-tint); color:var(--plum-deep); display:flex;align-items:center;justify-content:center;font-size:18px; flex-shrink:0;}
+.mat-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+.status-badge{font-size:11.5px; font-weight:700; color:var(--forest); display:inline-flex; align-items:center; gap:5px;}
+
+/* ============ NOTES ============ */
+.notes-modal-backdrop{position:fixed; inset:0; background:rgba(20,20,30,.45); display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; z-index:100;}
+.notes-modal{background:var(--paper-raised); border-radius:16px; max-width:680px; width:100%; padding:30px 34px; box-shadow:var(--shadow); margin-bottom:40px;}
+.notes-modal h4{color:var(--plum-deep); font-size:14px; text-transform:uppercase; letter-spacing:.03em; margin-top:22px; margin-bottom:8px;}
+.notes-modal h4:first-of-type{margin-top:6px;}
+.notes-modal ul{margin:0; padding-left:20px; font-size:14.5px; line-height:1.7;}
+.notes-modal p{font-size:14.5px; line-height:1.7;}
+.close-x{position:absolute; top:20px; right:22px; background:none; border:none; font-size:20px; color:var(--ink-soft);}
+
+/* ============ QUIZ ============ */
+.form-row{display:flex; flex-direction:column; gap:6px; margin-bottom:16px;}
+.form-row label{font-size:13px; font-weight:600; color:var(--ink-soft);}
+select, .textinput{
+  padding:11px 13px; border-radius:9px; border:1.4px solid var(--rule); background:var(--paper); color:var(--ink);
+  font-size:14.5px; font-family:var(--font-body);
+}
+.chip-group{display:flex; gap:8px; flex-wrap:wrap;}
+.q-card{margin-bottom:16px;}
+.q-number{font-size:12.5px; font-weight:700; color:var(--plum); margin-bottom:6px;}
+.q-text{font-size:16px; font-weight:600; margin-bottom:14px;}
+.option{
+  display:flex; align-items:center; gap:12px; padding:12px 14px; border:1.4px solid var(--rule); border-radius:10px;
+  margin-bottom:9px; cursor:pointer; font-size:14.5px; background:var(--paper-raised);
+}
+.option:hover{border-color:var(--plum);}
+.option.selected{border-color:var(--plum); background:var(--plum-tint);}
+.option.correct{border-color:var(--forest); background:var(--forest-tint);}
+.option.incorrect{border-color:var(--rust); background:var(--rust-tint);}
+.option-letter{width:24px; height:24px; border-radius:50%; border:1.4px solid var(--rule); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;}
+.explain-box{margin-top:10px; padding:12px 14px; border-radius:10px; background:var(--plum-tint); font-size:13.5px; line-height:1.55;}
+.result-score{font-family:var(--font-head); font-size:44px; font-weight:700; color:var(--plum-deep);}
+
+/* ============ FLASHCARDS ============ */
+.flash-wrap{display:flex; flex-direction:column; align-items:center; gap:20px; padding-top:10px;}
+.flash-card{
+  width:100%; max-width:460px; height:280px; position:relative; perspective:1200px; cursor:pointer;
+}
+.flash-inner{position:absolute; inset:0; transition:transform .5s; transform-style:preserve-3d;}
+.flash-card.flipped .flash-inner{transform:rotateY(180deg);}
+.flash-face{
+  position:absolute; inset:0; backface-visibility:hidden; border-radius:16px; border:1.4px solid var(--rule);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px;
+  background:var(--paper-raised); box-shadow:var(--shadow);
+}
+.flash-face.back{transform:rotateY(180deg); background:var(--plum-tint);}
+.flash-tag{font-size:11.5px; font-weight:700; color:var(--plum); text-transform:uppercase; letter-spacing:.04em; margin-bottom:14px;}
+.flash-face p{font-size:17px; font-weight:600; line-height:1.5;}
+.flash-face.back p{font-weight:500; font-size:15.5px;}
+.flash-hint{font-size:12px; color:var(--ink-soft); margin-top:16px;}
+.flash-controls{display:flex; gap:10px; align-items:center;}
+.flash-progress{font-size:13px; color:var(--ink-soft); font-family:var(--font-mono);}
+
+/* ============ EXAM MODE ============ */
+.topic-check{display:flex; align-items:center; gap:10px; padding:9px 0;}
+.day-card{border-left:3px solid var(--plum); padding:6px 0 6px 16px; margin-bottom:16px;}
+.day-card.final{border-left-color:var(--gold);}
+.day-title{font-size:12.5px; font-weight:700; color:var(--plum); text-transform:uppercase; letter-spacing:.03em;}
+.day-topic{font-family:var(--font-head); font-size:18px; margin:4px 0 8px;}
+.day-tasks{list-style:none; margin:0; padding:0; font-size:14px;}
+.day-tasks li{padding:3px 0; color:var(--ink-soft);}
+.day-tasks li::before{content:"— "; color:var(--rule);}
+
+/* ============ PROGRESS TRACKER ============ */
+.bar-row{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+.bar-label{width:130px; font-size:13.5px; font-weight:600; flex-shrink:0;}
+.bar-track{flex:1; height:14px; background:var(--plum-tint); border-radius:999px; overflow:hidden;}
+.bar-fill{height:100%; border-radius:999px; background:var(--plum);}
+.bar-pct{width:44px; text-align:right; font-family:var(--font-mono); font-size:13px; flex-shrink:0;}
+.stat-box{text-align:center; padding:18px 10px;}
+.stat-num{font-family:var(--font-head); font-size:28px; font-weight:700; color:var(--plum-deep);}
+.stat-lbl{font-size:12.5px; color:var(--ink-soft); margin-top:4px;}
+.trend-bars{display:flex; align-items:flex-end; gap:10px; height:110px; margin-top:10px;}
+.trend-bar{flex:1; background:var(--plum); border-radius:6px 6px 0 0; position:relative;}
+.trend-bar span{position:absolute; bottom:-20px; left:0; right:0; text-align:center; font-size:11px; color:var(--ink-soft);}
+
+/* ============ MISC ============ */
+.demo-banner{
+  background:var(--gold); color:#2a2110; font-size:12.5px; font-weight:700; text-align:center; padding:7px 10px;
+}
+.section-divider{height:1px; background:var(--rule); margin:26px 0;}
+.empty-state{text-align:center; padding:50px 20px; color:var(--ink-soft);}
+.recommend-box{display:flex; gap:12px; padding:14px 16px; border-radius:12px; background:var(--plum-tint); align-items:flex-start;}
+.recommend-box .ic{font-size:18px;}
+.recommend-box p{font-size:13.5px; line-height:1.55;}
+.toast{position:fixed; bottom:24px; right:24px; background:var(--ink); color:var(--paper); padding:12px 18px; border-radius:10px; font-size:13.5px; z-index:200; box-shadow:var(--shadow);}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 880px){
+  .sidebar{display:none;}
+  .topbar{display:flex;}
+  .page{padding:22px 18px 70px;}
+  .grid2{grid-template-columns:1fr;}
+  .grid3{grid-template-columns:1fr;}
+  .hero{grid-template-columns:1fr; padding-top:30px;}
+  .hero h1{font-size:36px;}
+  .hero-art{display:none;}
+  .features{grid-template-columns:1fr; padding:36px 0;}
+  .how-steps{grid-template-columns:1fr;}
+  .landing-nav-links{display:none;}
+  .chat-scroll{padding:18px;}
+  .chat-input-bar{padding:12px 16px;}
+  .context-banner{margin:14px 16px 0;}
+  .bar-label{width:88px; font-size:12px;}
+}
+.mobile-drawer{
+  position:fixed; inset:0 30% 0 0; background:var(--paper-raised); z-index:50; padding:20px 16px; box-shadow:var(--shadow);
+  transform:translateX(-100%); transition:transform .25s ease;
+}
+.mobile-drawer.open{transform:translateX(0);}
+.drawer-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:40; opacity:0; pointer-events:none; transition:opacity .25s;}
+.drawer-backdrop.open{opacity:1; pointer-events:auto;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* =========================================================================
+   STUDYMATE AI — Frontend Prototype (Demo Mode)
+   -------------------------------------------------------------------------
+   This file is a self-contained, fully client-side demonstration of the
+   product. Every "AI" response below is generated by local template logic
+   (search for MOCK_AI / DemoAI) so the app is fully navigable without a
+   backend. In the real product this is replaced by calls to a backend
+   route that talks to the Claude API — see the companion backend project
+   (server.js / routes / prompts) delivered alongside this file for the
+   real integration, with the exact call sites marked "CONNECT REAL API".
+   ========================================================================= */
+
+/* ---------------------------------------------------------------------
+   0. STATE + PERSISTENCE (per-viewer, this browser only)
+--------------------------------------------------------------------- */
+const STORAGE_KEY = 'studymate_demo_state_v1';
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){ /* storage unavailable or empty — fall through to defaults */ }
+  return null;
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* ignore */ }
+}
+
+const DEFAULT_STATE = {
+  route: 'landing',
+  studentName: 'Aditi',
+  streak: 5,
+  overallProgress: 68,
+  theme: 'system',
+  goals: [
+    {id:1, text:'Revise Cash Management', done:false},
+    {id:2, text:'Complete 20 MCQs', done:false},
+    {id:3, text:'Review Flashcards', done:true},
+  ],
+  weakTopics: ['Lock Box System', 'Marketable Securities', 'Inventory Management'],
+  strongTopics: ['Elasticity of Demand', 'Personality Theories', 'Break-even Analysis'],
+  performance: [
+    {subject:'Psychology', pct:90},
+    {subject:'Economics', pct:85},
+    {subject:'Accounting', pct:78},
+    {subject:'Finance', pct:72},
+  ],
+  weeklyTrend: [58,61,64,66,65,68,68],
+  quizAverage: 79,
+  questionsAttempted: 342,
+  topicsCompleted: 24,
+  materials: [
+    {id:'m1', name:'Financial Management.pdf', type:'pdf', subject:'Financial Management'},
+    {id:'m2', name:'Microeconomics – Elasticity.pptx', type:'pptx', subject:'Economics'},
+    {id:'m3', name:'Cost Accounting Basics.docx', type:'docx', subject:'Accounting'},
+  ],
+  recentActivity: [
+    {label:'Quiz — Elasticity of Supply', meta:'18/20 · Economics', time:'Today, 9:40 AM'},
+    {label:'Flashcards — Cash Management', meta:'12 cards reviewed', time:'Yesterday'},
+    {label:'AI Tutor — Lock Box System', meta:'6 messages', time:'Yesterday'},
+  ],
+  chatHistory: [],
+  chatContextMaterial: null,
+  flashState: {},
+  tutorTopicPending: null,
+};
+
+let state = loadState() || JSON.parse(JSON.stringify(DEFAULT_STATE));
+function persist(){ saveState(); }
+
+/* ---------------------------------------------------------------------
+   1. CONTENT / SUBJECT DATA
+--------------------------------------------------------------------- */
+const SUBJECT_TOPICS = {
+  'Financial Management': ['Cash Management','Marketable Securities','Lock Box System','Working Capital','Capital Budgeting'],
+  'Economics': ['Elasticity of Supply','Elasticity of Demand','Opportunity Cost','Market Equilibrium','Inflation'],
+  'Accounting': ['Inventory Management','Break-even Analysis','Depreciation Methods','Cost-Volume-Profit','Journal Entries'],
+  'Psychology': ['Personality Theories','Interpersonal Relationships','Memory & Cognition','Motivation Theories'],
+  'Business Studies': ['Marketing Mix','Organisational Structure','Business Ethics','SWOT Analysis'],
+};
+const SUBJECTS = Object.keys(SUBJECT_TOPICS);
+
+/* ---------------------------------------------------------------------
+   2. DEMO AI ENGINE
+   All functions here stand in for a real POST to /api/... which would
+   forward a modular prompt to Claude. Shapes mirror the structured JSON
+   the real backend is expected to return, so swapping in the real API
+   later requires no frontend rework — see backend prompts/*.js.
+--------------------------------------------------------------------- */
+const DemoAI = {
+
+  // --- AI Tutor -----------------------------------------------------
+  tutorReply(question, contextMaterial){
+    const q = question.trim().toLowerCase();
+    if(q.includes('opportunity cost')){
+      return {
+        text: "Think of opportunity cost as what you give up when you choose something else.\n\nFor example, if you have ₹500 and spend it on a book, you can't use that same ₹500 to buy a movie ticket. The movie ticket is one possible opportunity cost of buying the book.\n\nIn short: opportunity cost = value of the next-best alternative you didn't choose.",
+        topic: 'Opportunity Cost',
+      };
+    }
+    if(q.includes('elasticity')){
+      return {
+        text: "Elasticity of supply measures how much the quantity supplied changes when price changes.\n\nIf a small price rise causes a big jump in supply, supply is elastic. If quantity barely moves even when price changes a lot, supply is inelastic — this usually happens when producers can't quickly ramp up production (perishable goods, fixed factory capacity, etc).",
+        topic: 'Elasticity of Supply',
+      };
+    }
+    if(q.includes('lock box') || q.includes('lockbox')){
+      return {
+        text: "A lock box system is a cash-collection method where customers send payments directly to a bank-operated post box instead of the company's office.\n\nThe bank collects, processes, and deposits the payments faster than routing them through the company first — which shortens the time cash sits \"in transit\" (called mailing + processing float) and speeds up how quickly the company can use that money.",
+        topic: 'Lock Box System',
+      };
+    }
+    if(contextMaterial){
+      return {
+        text: `Based on ${contextMaterial}, here's the key idea for that section: it introduces the core definition first, walks through one worked example, then lists two or three exceptions students commonly get wrong. I'd focus your first pass on the definition and the worked example — the exceptions are easier to pick up once those two are solid.`,
+        topic: null,
+      };
+    }
+    return {
+      text: `Good question. Here's a simple way to think about "${question.trim()}": break it into (1) what it means in one plain sentence, (2) one everyday example, and (3) how it usually shows up in an exam question. Tell me which of those three you want me to expand first, or tap one of the quick actions below.`,
+      topic: null,
+    };
+  },
+
+  simplify(topic){
+    return `Simplest version: ${topic} is really just about one trade-off or relationship — once you can restate it in a single sentence without jargon, the rest of the topic is just examples of that one idea repeating in different situations.`;
+  },
+  giveExample(topic){
+    const examples = {
+      'Opportunity Cost': "Example: A student has 2 free hours before an exam. Studying Accounting instead of Economics means the opportunity cost is the extra Economics marks they might have gained.",
+      'Elasticity of Supply': "Example: Fresh fish supply is inelastic in the short run — even if prices double overnight, fishers can't catch more fish immediately.",
+      'Lock Box System': "Example: A telecom company has customers mail cheques to a P.O. box managed by its bank in each city, instead of to head office, cutting 2–3 days off collection time.",
+    };
+    return examples[topic] || `Example: imagine a realistic classroom scenario involving ${topic.toLowerCase()} — a case where two students make different choices and you compare the outcome.`;
+  },
+  explainAgain(topic){
+    return `Let's take that from a different angle. Picture ${topic.toLowerCase()} as a rule you'd explain to a junior student using only one real-life analogy — once the analogy clicks, map each part of the analogy back to the technical term.`;
+  },
+
+  // --- Notes (Smart Notes) -------------------------------------------
+  notesFor(topic){
+    const bank = {
+      'Cash Management': {
+        explanation: "Cash management is how a business plans, controls, and monitors its cash inflows and outflows so it always has enough cash to meet obligations without holding too much idle cash.",
+        points: ["Goal: balance liquidity against profitability", "Involves cash budgeting, collection, and payment timing", "Idle cash earns no return — but too little risks insolvency"],
+        definitions: [["Cash cycle","Time between paying for inputs and receiving cash from sales"], ["Float","Delay between when a cheque is written and when funds actually clear"]],
+        examples: ["A firm sweeps end-of-day surplus cash into a short-term money market fund overnight."],
+        formulas: ["Cash Operating Cycle = Inventory Period + Receivables Period − Payables Period"],
+        tips: ["Exam questions often ask you to calculate the cash cycle — write out each period separately before summing."],
+        revision: ["Balance liquidity vs profitability", "Know the 3 motives for holding cash: transactional, precautionary, speculative"],
+      },
+      'default': {
+        explanation: `${topic} covers a core relationship that shows up repeatedly in this subject — start by pinning down the one-sentence definition, then see how it's applied in a worked example.`,
+        points: [`Definition of ${topic}`, "How it's typically tested (definition vs application)", "Common student mistakes"],
+        definitions: [[topic, "See your uploaded material or ask the AI Tutor for the exact textbook definition."]],
+        examples: [`A short applied example involving ${topic.toLowerCase()}.`],
+        formulas: [],
+        tips: ["Re-read the definition once, then close the book and try to state it from memory."],
+        revision: [`One-line summary of ${topic}`, "One worked example", "One common mistake to avoid"],
+      }
+    };
+    const data = bank[topic] || bank['default'];
+    return { topic, ...data };
+  },
+
+  // --- MCQ / Quiz Generation ------------------------------------------
+  quizBank: {
+    'Elasticity of Supply': [
+      { q:"If a 10% rise in price causes only a 2% rise in quantity supplied, supply is:", options:["Elastic","Inelastic","Perfectly elastic","Unitary elastic"], correct:1, explain:"A price change causing a proportionally smaller quantity response means supply is inelastic." },
+      { q:"Which factor tends to make supply MORE elastic?", options:["Perishable product","Long production time","Spare production capacity","Fixed factory size"], correct:2, explain:"Spare capacity lets producers ramp up output quickly when price rises, making supply more elastic." },
+      { q:"Perfectly inelastic supply means the supply curve is:", options:["Horizontal","Vertical","Upward sloping","Downward sloping"], correct:1, explain:"A vertical supply curve means quantity supplied doesn't change at all regardless of price." },
+    ],
+    'Cash Management': [
+      { q:"Which is NOT a motive for holding cash?", options:["Transactional","Precautionary","Speculative","Depreciative"], correct:3, explain:"\"Depreciative\" is not a recognised motive for holding cash; the three classic motives are transactional, precautionary and speculative." },
+      { q:"A lock box system primarily helps reduce:", options:["Production cost","Mailing and processing float","Interest rates","Tax liability"], correct:1, explain:"Lock boxes speed up collection, cutting the float — the delay between payment and usable cash." },
+    ],
+  },
+  makeQuiz(subject, topic, difficulty, count, qtype){
+    const pool = this.quizBank[topic] || [];
+    const generated = [];
+    for(let i=0;i<count;i++){
+      if(pool[i % Math.max(pool.length,1)] && i < pool.length){
+        generated.push(pool[i]);
+      } else {
+        generated.push(this.genericQuestion(topic || subject, i, difficulty, qtype));
+      }
+    }
+    return generated;
+  },
+  genericQuestion(topic, i, difficulty, qtype){
+    if(qtype === 'True/False'){
+      const truth = i % 2 === 0;
+      return {
+        q:`True or False: ${topic} is directly affected by short-term changes in market conditions.`,
+        options:["True","False"],
+        correct: truth ? 0 : 1,
+        explain: `This is a ${difficulty.toLowerCase()}-level statement about ${topic} — check your notes for the exact condition it depends on.`,
+      };
+    }
+    const stems = {
+      'Easy':`Which statement best DEFINES ${topic}?`,
+      'Medium':`Which of these is the most likely EFFECT of a change related to ${topic}?`,
+      'Hard':`In a numerical scenario involving ${topic}, which factor most affects the outcome?`,
+      'HOTS':`A company is deciding between two strategies involving ${topic}. Which factor should weigh most heavily in that decision?`,
+    };
+    return {
+      q: stems[difficulty] || stems['Medium'],
+      options:[`Correct application of ${topic}`, "A commonly confused related concept", "An unrelated financial term", "A definition from a different chapter"],
+      correct:0,
+      explain:`The correct option reflects the standard textbook treatment of ${topic}; the distractors are concepts students often confuse it with.`,
+    };
+  },
+
+  // --- Flashcards ------------------------------------------------------
+  flashBank: {
+    'Elasticity of Supply': [
+      {front:"What is elasticity of supply?", back:"It measures the responsiveness of quantity supplied to a change in price."},
+      {front:"What makes supply inelastic?", back:"Limited production capacity, perishability, or long production time."},
+    ],
+    'Cash Management': [
+      {front:"What is a lock box system?", back:"A bank-operated collection point that speeds up receipt and processing of customer payments."},
+      {front:"Name the 3 motives for holding cash.", back:"Transactional, precautionary, and speculative."},
+    ],
+  },
+  makeFlashcards(topic, count){
+    const pool = this.flashBank[topic] || [];
+    const out = [];
+    for(let i=0;i<count;i++){
+      out.push(pool[i % Math.max(pool.length,1)] || {
+        front:`Define: ${topic} (card ${i+1})`,
+        back:`A key idea within ${topic} — refer to your notes for the exact textbook wording.`,
+      });
+    }
+    return out;
+  },
+
+  // --- Exam Plan ---------------------------------------------------
+  makePlan(subject, examDate, hoursPerDay, level, topics, weakTopics){
+    const today = new Date();
+    const end = new Date(examDate);
+    let days = Math.max(3, Math.min(14, Math.round((end - today) / 86400000)));
+    if(isNaN(days)) days = 7;
+    const ordered = [...weakTopics.filter(t=>topics.includes(t)), ...topics.filter(t=>!weakTopics.includes(t))];
+    const plan = [];
+    for(let d=1; d<=days-1; d++){
+      const topic = ordered[(d-1) % Math.max(ordered.length,1)] || subject;
+      const isWeak = weakTopics.includes(topic);
+      plan.push({
+        day: d,
+        topic,
+        tasks: isWeak
+          ? ["Re-learn core concepts from scratch", "Make short revision notes", `Complete ${hoursPerDay >= 3 ? 20 : 12} MCQs`, "1:1 review with AI Tutor"]
+          : ["Quick concept review", "Flashcards for key terms", `Practice ${hoursPerDay >= 3 ? 15 : 10} questions`],
+      });
+    }
+    plan.push({ day: days, topic:'Final Revision', tasks:["Revisit all weak topics", "Timed mock quiz (mixed, all topics)", "Review flashcards marked \"Need Revision\"", "Light review only — no new topics"], final:true });
+    return plan;
+  },
+};
+
+/* ---------------------------------------------------------------------
+   3. ROUTER + RENDER
+--------------------------------------------------------------------- */
+const NAV_ITEMS = [
+  {route:'dashboard', icon:'🏠', label:'Dashboard'},
+  {route:'tutor', icon:'🤖', label:'AI Tutor'},
+  {route:'materials', icon:'📚', label:'My Materials'},
+  {route:'quiz', icon:'📝', label:'Quiz Arena'},
+  {route:'flashcards', icon:'🧠', label:'Flashcards'},
+  {route:'exam', icon:'🎯', label:'Exam Mode'},
+  {route:'progress', icon:'📊', label:'Progress'},
+  {route:'settings', icon:'⚙️', label:'Settings'},
+];
+
+function goto(route, extra){
+  state.route = route;
+  if(extra) Object.assign(state, extra);
+  persist();
+  render();
+  window.scrollTo(0,0);
+}
+
+function render(){
+  const root = document.getElementById('app');
+  if(state.route === 'landing'){
+    root.innerHTML = renderLanding();
+    wireLanding();
+    return;
+  }
+  root.innerHTML = renderShell();
+  wireShell();
+}
+
+/* ---------- LANDING ---------- */
+function renderLanding(){
+  return `
+  <div class="demo-banner">DEMO MODE — sample data shown below. Connect the Claude API in the backend to go live.</div>
+  <div class="landing">
+    <div class="container">
+      <div class="landing-nav">
+        <div class="brand" id="landing-brand">
+          <div class="brand-mark">S</div>
+          <div class="brand-name">StudyMate AI</div>
+        </div>
+        <div class="landing-nav-links">
+          <span>Features</span><span>How it works</span><span>Pricing</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="btn-open-app">Open App</button>
+      </div>
+
+      <div class="hero">
+        <div>
+          <h1>Learn smarter.<br>Prepare better.<br><span class="tagline-underline">Score higher.
+            <svg viewBox="0 0 300 14" preserveAspectRatio="none"><path d="M2 10 C 80 2, 220 2, 298 10" stroke="var(--plum)" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.35"/></svg>
+          </span></h1>
+          <p class="hero-sub">Your AI-powered study companion that turns your study materials into simple explanations, notes, quizzes, flashcards, and personalised exam preparation.</p>
+          <div class="hero-ctas">
+            <button class="btn btn-primary" id="btn-start-learning">Start Learning</button>
+            <button class="btn btn-ghost" id="btn-try-tutor">Try AI Tutor</button>
+          </div>
+        </div>
+        <div class="hero-art">
+          <div class="floaty-card floaty-1">
+            <div class="floaty-tag">Quiz Arena</div>
+            <div class="floaty-title">Elasticity of Supply</div>
+            <div class="floaty-body">16/20 correct — 3 topics flagged for revision</div>
+          </div>
+          <div class="floaty-card floaty-2">
+            <div class="floaty-tag">AI Tutor</div>
+            <div class="floaty-title">"What is opportunity cost?"</div>
+            <div class="floaty-body">Explained with a ₹500 example in 4 seconds</div>
+          </div>
+          <div class="floaty-card floaty-3">
+            <div class="floaty-tag">Exam Mode</div>
+            <div class="floaty-title">7-day plan generated</div>
+            <div class="floaty-body">Weak topics scheduled first</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="features">
+        <div class="feature-card"><div class="feature-emoji">📚</div><h3>Smart Study Materials</h3><p>Upload PDFs, PPTs and notes — the AI reads them so it can answer from your actual syllabus.</p></div>
+        <div class="feature-card"><div class="feature-emoji">🤖</div><h3>AI Tutor</h3><p>Ask anything, in plain language, and get an explanation sized to how much time you have.</p></div>
+        <div class="feature-card"><div class="feature-emoji">📝</div><h3>AI Quiz Generator</h3><p>Practice questions built from your topics, with instant explanations for every answer.</p></div>
+        <div class="feature-card"><div class="feature-emoji">🧠</div><h3>Smart Flashcards</h3><p>Auto-generated flashcards that track which ones you still need to revise.</p></div>
+        <div class="feature-card"><div class="feature-emoji">🎯</div><h3>Exam Mode</h3><p>Tell it your exam date and it builds a day-by-day plan, weak topics first.</p></div>
+        <div class="feature-card"><div class="feature-emoji">📊</div><h3>Progress Tracking</h3><p>See your strong and weak topics at a glance, and how you're trending week to week.</p></div>
+      </div>
+
+      <div class="how">
+        <div class="section-label">HOW STUDYMATE AI WORKS</div>
+        <h2 style="font-size:28px;">Six steps from upload to exam-ready</h2>
+        <div class="how-steps">
+          <div class="how-step"><div class="how-num">1</div><p>Upload your study material</p></div>
+          <div class="how-step"><div class="how-num">2</div><p>Let AI understand your material</p></div>
+          <div class="how-step"><div class="how-num">3</div><p>Learn through simple explanations</p></div>
+          <div class="how-step"><div class="how-num">4</div><p>Practise with AI-generated questions</p></div>
+          <div class="how-step"><div class="how-num">5</div><p>Track your progress</p></div>
+          <div class="how-step"><div class="how-num">6</div><p>Prepare smarter for exams</p></div>
+        </div>
+      </div>
+
+      <div class="cta-band">
+        <h2>Ready to study smarter?</h2>
+        <button class="btn btn-primary" id="btn-get-started">Get Started</button>
+      </div>
+
+      <div class="landing-foot">
+        <span>© 2026 StudyMate AI</span>
+        <span>Understand → Practice → Revise → Prepare → Improve</span>
+      </div>
+    </div>
+  </div>`;
+}
+function wireLanding(){
+  const open = () => goto('dashboard');
+  document.getElementById('landing-brand').onclick = open;
+  document.getElementById('btn-open-app').onclick = open;
+  document.getElementById('btn-start-learning').onclick = open;
+  document.getElementById('btn-get-started').onclick = open;
+  document.getElementById('btn-try-tutor').onclick = () => goto('tutor');
+}
+
+/* ---------- APP SHELL ---------- */
+function renderShell(){
+  const navHtml = NAV_ITEMS.map(n => `
+    <button class="navlink ${state.route===n.route?'active':''}" data-route="${n.route}">
+      <span class="ic">${n.icon}</span><span>${n.label}</span>
+    </button>`).join('');
+  return `
+  <div class="shell">
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    <nav class="mobile-drawer" id="mobile-drawer">
+      <div class="brand" id="drawer-brand"><div class="brand-mark">S</div><div class="brand-name">StudyMate AI</div></div>
+      <ul class="navlist" style="margin-top:10px;">${navHtml}</ul>
+    </nav>
+    <aside class="sidebar">
+      <div class="brand" id="sidebar-brand"><div class="brand-mark">S</div><div class="brand-name">StudyMate AI</div></div>
+      <ul class="navlist">${navHtml}</ul>
+      <div class="sidebar-foot">
+        <div class="profile-row">
+          <div class="avatar">${state.studentName.slice(0,1)}</div>
+          <div>
+            <div class="profile-name">${state.studentName}</div>
+            <div class="profile-sub">🔥 ${state.streak}-day streak</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="main">
+      <div class="demo-banner">DEMO MODE — showing sample data. See Settings for how to connect the real Claude API.</div>
+      <div class="topbar">
+        <button class="hamburger" id="btn-hamburger" aria-label="Open menu">☰</button>
+        <div class="brand" style="padding:0;"><div class="brand-mark" style="width:28px;height:28px;font-size:13px;">S</div><div class="brand-name" style="font-size:15px;">StudyMate AI</div></div>
+        <div style="width:28px;"></div>
+      </div>
+      <div id="page-outlet">${renderPage()}</div>
+    </div>
+  </div>`;
+}
+function wireShell(){
+  document.querySelectorAll('[data-route]').forEach(el=>{
+    el.onclick = () => { closeDrawer(); goto(el.getAttribute('data-route')); };
+  });
+  document.getElementById('sidebar-brand').onclick = () => goto('landing');
+  const drawerBrand = document.getElementById('drawer-brand');
+  if(drawerBrand) drawerBrand.onclick = () => { closeDrawer(); goto('landing'); };
+  const ham = document.getElementById('btn-hamburger');
+  if(ham) ham.onclick = openDrawer;
+  const backdrop = document.getElementById('drawer-backdrop');
+  if(backdrop) backdrop.onclick = closeDrawer;
+  wirePage();
+}
+function openDrawer(){ document.getElementById('mobile-drawer').classList.add('open'); document.getElementById('drawer-backdrop').classList.add('open'); }
+function closeDrawer(){ const d=document.getElementById('mobile-drawer'); const b=document.getElementById('drawer-backdrop'); if(d) d.classList.remove('open'); if(b) b.classList.remove('open'); }
+
+function renderPage(){
+  switch(state.route){
+    case 'dashboard': return renderDashboard();
+    case 'tutor': return renderTutor();
+    case 'materials': return renderMaterials();
+    case 'quiz': return renderQuiz();
+    case 'flashcards': return renderFlashcards();
+    case 'exam': return renderExam();
+    case 'progress': return renderProgress();
+    case 'settings': return renderSettings();
+    default: return renderDashboard();
+  }
+}
+function wirePage(){
+  switch(state.route){
+    case 'dashboard': return wireDashboard();
+    case 'tutor': return wireTutor();
+    case 'materials': return wireMaterials();
+    case 'quiz': return wireQuiz();
+    case 'flashcards': return wireFlashcards();
+    case 'exam': return wireExam();
+    case 'progress': return wireProgress();
+    case 'settings': return wireSettings();
+  }
+}
+function refreshOutlet(){
+  document.getElementById('page-outlet').innerHTML = renderPage();
+  wirePage();
+}
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+function renderDashboard(){
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const goalsHtml = state.goals.map(g => `
+    <div class="check-row">
+      <div class="checkbox ${g.done?'checked':''}" data-goal="${g.id}">${g.done?'✓':''}</div>
+      <div class="check-text ${g.done?'done':''}">${g.text}</div>
+    </div>`).join('');
+  const weakHtml = state.weakTopics.map(t=>`<span class="pill pill-weak">⚠️ ${t}</span>`).join(' ');
+  const activityHtml = state.recentActivity.map(a=>`
+    <div class="check-row" style="align-items:flex-start;">
+      <div style="flex:1;">
+        <div style="font-weight:600; font-size:14px;">${a.label}</div>
+        <div style="font-size:12.5px; color:var(--ink-soft); margin-top:2px;">${a.meta}</div>
+      </div>
+      <div style="font-size:12px; color:var(--ink-soft); white-space:nowrap;">${a.time}</div>
+    </div>`).join('');
+  return `
+  <div class="page">
+    <div class="page-head">
+      <h2 style="font-size:26px;">${greet}, ${state.studentName}! 👋</h2>
+      <p class="eyebrow-free">Here's where things stand today.</p>
+    </div>
+    <div class="grid2">
+      <div class="stack">
+        <div class="card">
+          <div class="progress-label-row"><h3 style="font-size:15px;">Study Progress</h3><span class="big-num">${state.overallProgress}%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:${state.overallProgress}%"></div></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px; margin-bottom:6px;">Today's Goals</h3>
+          ${goalsHtml}
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px; margin-bottom:10px;">Recent Activity</h3>
+          ${activityHtml}
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:34px;">🔥</div>
+          <div class="big-num">${state.streak} days</div>
+          <div class="eyebrow-free">Current streak</div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px; margin-bottom:10px;">Weak Topics</h3>
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start;">${weakHtml}</div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px; margin-bottom:12px;">Quick Actions</h3>
+          <div class="stack" style="gap:9px;">
+            <button class="btn btn-primary btn-block" data-qa="tutor">Ask AI</button>
+            <button class="btn btn-ghost btn-block" data-qa="materials">Upload Material</button>
+            <button class="btn btn-ghost btn-block" data-qa="quiz">Take a Quiz</button>
+            <button class="btn btn-ghost btn-block" data-qa="exam">Start Exam Mode</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function wireDashboard(){
+  document.querySelectorAll('[data-goal]').forEach(el=>{
+    el.onclick = () => {
+      const id = Number(el.getAttribute('data-goal'));
+      const g = state.goals.find(x=>x.id===id);
+      g.done = !g.done;
+      persist(); refreshOutlet();
+    };
+  });
+  document.querySelectorAll('[data-qa]').forEach(el=> el.onclick = () => goto(el.getAttribute('data-qa')));
+}
+
+/* ============================================================
+   AI TUTOR
+============================================================ */
+function seedChatIfEmpty(){
+  if(state.chatHistory.length === 0){
+    state.chatHistory.push({role:'user', text:'What is opportunity cost?'});
+    const r = DemoAI.tutorReply('What is opportunity cost?', null);
+    state.chatHistory.push({role:'ai', text:r.text, topic:r.topic});
+  }
+}
+function renderTutor(){
+  seedChatIfEmpty();
+  const ctxBanner = state.chatContextMaterial
+    ? `<div class="context-banner">📎 Using context from <strong>${state.chatContextMaterial}</strong></div>`
+    : '';
+  const msgs = state.chatHistory.map((m,i) => {
+    if(m.role==='user'){
+      return `<div class="msg user"><div class="bubble">${escapeHtml(m.text)}</div></div>`;
+    }
+    const qa = m.topic ? `
+      <div class="quick-actions">
+        <button class="chip-btn" data-act="simplify" data-idx="${i}">Explain Simply</button>
+        <button class="chip-btn" data-act="example" data-idx="${i}">Give an Example</button>
+        <button class="chip-btn" data-act="quiz" data-idx="${i}">Quiz Me</button>
+        <button class="chip-btn" data-act="again" data-idx="${i}">Explain Again</button>
+        <button class="chip-btn" data-act="notes" data-idx="${i}">Make Short Notes</button>
+      </div>` : '';
+    return `<div class="msg ai"><div class="ai-label">StudyMate AI</div><div class="bubble">${escapeHtml(m.text).replace(/\n/g,'<br>')}</div>${qa}</div>`;
+  }).join('');
+  return `
+  <div class="chat-wrap">
+    ${ctxBanner}
+    <div class="chat-scroll" id="chat-scroll">${msgs}<div id="typing-slot"></div></div>
+    <div class="chat-input-bar">
+      <input type="text" id="chat-input" placeholder="Ask about any topic, or 'Explain Chapter 2 from my uploaded material'..." />
+      <button class="btn btn-primary" id="chat-send">Send</button>
+    </div>
+  </div>`;
+}
+function escapeHtml(s){ const d=document.createElement('div'); d.innerText = s; return d.innerHTML; }
+
+function wireTutor(){
+  const scroll = document.getElementById('chat-scroll');
+  if(scroll) scroll.scrollTop = scroll.scrollHeight;
+  const input = document.getElementById('chat-input');
+  const send = document.getElementById('chat-send');
+  const doSend = () => {
+    const text = input.value.trim();
+    if(!text) return;
+    state.chatHistory.push({role:'user', text});
+    persist();
+    input.value = '';
+    refreshOutlet();
+    showTyping();
+    setTimeout(()=>{
+      // CONNECT REAL API: replace DemoAI.tutorReply with a POST to /api/tutor
+      const r = DemoAI.tutorReply(text, state.chatContextMaterial);
+      state.chatHistory.push({role:'ai', text:r.text, topic:r.topic});
+      persist();
+      refreshOutlet();
+    }, 900);
+  };
+  if(send) send.onclick = doSend;
+  if(input) input.addEventListener('keydown', e => { if(e.key==='Enter') doSend(); });
+
+  document.querySelectorAll('[data-act]').forEach(btn=>{
+    btn.onclick = () => {
+      const idx = Number(btn.getAttribute('data-idx'));
+      const topic = state.chatHistory[idx].topic;
+      const act = btn.getAttribute('data-act');
+      if(act === 'quiz'){ goto('quiz', {quizPrefillTopic: topic}); return; }
+      if(act === 'notes'){ openNotesModal(topic); return; }
+      showTyping();
+      setTimeout(()=>{
+        let text;
+        if(act === 'simplify') text = DemoAI.simplify(topic);
+        if(act === 'example') text = DemoAI.giveExample(topic);
+        if(act === 'again') text = DemoAI.explainAgain(topic);
+        state.chatHistory.push({role:'ai', text, topic});
+        persist();
+        refreshOutlet();
+      }, 700);
+    };
+  });
+}
+function showTyping(){
+  const slot = document.getElementById('typing-slot');
+  if(!slot) return;
+  slot.innerHTML = `<div class="msg ai"><div class="ai-label">StudyMate AI</div><div class="bubble"><span class="typing-dots"><span></span><span></span><span></span></span> thinking...</div></div>`;
+  const scroll = document.getElementById('chat-scroll');
+  if(scroll) scroll.scrollTop = scroll.scrollHeight;
+}
+
+/* ============================================================
+   MY MATERIALS
+============================================================ */
+const MAT_ICON = {pdf:'📕', pptx:'📊', ppt:'📊', docx:'📄', doc:'📄', txt:'📃'};
+function renderMaterials(){
+  const cards = state.materials.map(m => `
+    <div class="card mat-card">
+      <div class="mat-icon">${MAT_ICON[m.type]||'📄'}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700; font-family:var(--font-head); font-size:16px;">${m.name}</div>
+        <div class="status-badge" style="margin-top:4px;">Uploaded ✓</div>
+        <div class="mat-actions">
+          <button class="chip-btn" data-mat-act="notes" data-mat="${m.id}">Summarize</button>
+          <button class="chip-btn" data-mat-act="ask" data-mat="${m.id}">Ask Questions</button>
+          <button class="chip-btn" data-mat-act="mcq" data-mat="${m.id}">Generate MCQs</button>
+          <button class="chip-btn" data-mat-act="flash" data-mat="${m.id}">Create Flashcards</button>
+          <button class="chip-btn" data-mat-act="exam" data-mat="${m.id}">Exam Questions</button>
+        </div>
+      </div>
+    </div>`).join('');
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:24px;">My Materials</h2><p class="eyebrow-free">Upload PDFs, PPTs, and docs — the AI answers from these first.</p></div>
+    <div class="upload-zone" id="upload-zone">
+      <div style="font-size:26px;">⬆️</div>
+      <div style="font-weight:600; margin-top:8px;">Click or drop a file to upload</div>
+      <div class="eyebrow-free" style="margin-top:4px; font-size:13px;">PDF · PPT · PPTX · DOC · DOCX · TXT</div>
+      <input type="file" id="file-input" class="hidden" accept=".pdf,.ppt,.pptx,.doc,.docx,.txt" />
+    </div>
+    <div class="section-divider"></div>
+    ${cards}
+  </div>`;
+}
+function wireMaterials(){
+  const zone = document.getElementById('upload-zone');
+  const input = document.getElementById('file-input');
+  zone.onclick = () => input.click();
+  input.onchange = () => {
+    const f = input.files[0];
+    if(!f){ return; }
+    const ext = f.name.split('.').pop().toLowerCase();
+    const allowed = ['pdf','ppt','pptx','doc','docx','txt'];
+    if(!allowed.includes(ext)){
+      showToast("We couldn't upload this file. Please check the file type and try again.");
+      return;
+    }
+    const id = 'm' + Date.now();
+    state.materials.unshift({id, name:f.name, type:ext, subject: SUBJECTS[Math.floor(Math.random()*SUBJECTS.length)]});
+    persist();
+    refreshOutlet();
+    showToast(`"${f.name}" uploaded successfully.`);
+  };
+  document.querySelectorAll('[data-mat-act]').forEach(btn=>{
+    btn.onclick = () => {
+      const matId = btn.getAttribute('data-mat');
+      const mat = state.materials.find(m=>m.id===matId);
+      const act = btn.getAttribute('data-mat-act');
+      const topic = (SUBJECT_TOPICS[mat.subject]||['this topic'])[0];
+      if(act === 'notes'){ openNotesModal(topic, mat.name); return; }
+      if(act === 'ask'){ state.chatContextMaterial = mat.name; persist(); goto('tutor'); return; }
+      if(act === 'mcq'){ goto('quiz', {quizPrefillSubject: mat.subject, quizPrefillTopic: topic}); return; }
+      if(act === 'flash'){ goto('flashcards', {flashPrefillTopic: topic}); return; }
+      if(act === 'exam'){ goto('quiz', {quizPrefillSubject: mat.subject, quizPrefillTopic: topic, quizPrefillDifficulty:'Hard'}); return; }
+    };
+  });
+}
+
+/* ---------- SMART NOTES MODAL ---------- */
+function openNotesModal(topic, sourceName){
+  const notes = DemoAI.notesFor(topic || 'this topic');
+  const overlay = document.createElement('div');
+  overlay.className = 'notes-modal-backdrop';
+  overlay.id = 'notes-overlay';
+  const defsHtml = notes.definitions.map(d=>`<li><strong>${d[0]}:</strong> ${d[1]}</li>`).join('');
+  const listHtml = arr => arr.map(x=>`<li>${x}</li>`).join('');
+  overlay.innerHTML = `
+    <div class="notes-modal" style="position:relative;">
+      <button class="close-x" id="notes-close">✕</button>
+      <div class="section-label" style="margin-bottom:2px;">SMART NOTES ${sourceName?`· from ${sourceName}`:''}</div>
+      <h3 style="font-size:22px;">${notes.topic}</h3>
+      <h4>Simple Explanation</h4><p>${notes.explanation}</p>
+      <h4>Important Points</h4><ul>${listHtml(notes.points)}</ul>
+      <h4>Definitions</h4><ul>${defsHtml}</ul>
+      <h4>Examples</h4><ul>${listHtml(notes.examples)}</ul>
+      ${notes.formulas.length? `<h4>Formulas</h4><ul>${listHtml(notes.formulas)}</ul>`:''}
+      <h4>Exam Tips</h4><ul>${listHtml(notes.tips)}</ul>
+      <h4>Quick Revision</h4><ul>${listHtml(notes.revision)}</ul>
+      <div style="display:flex; gap:10px; margin-top:22px; flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm" id="notes-copy">Copy Notes</button>
+        <button class="btn btn-ghost btn-sm" id="notes-download">Download Notes</button>
+        <button class="btn btn-primary btn-sm" id="notes-ask">Ask AI About This Topic</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('notes-close').onclick = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) overlay.remove(); });
+  document.getElementById('notes-copy').onclick = () => {
+    const text = `${notes.topic}\n\n${notes.explanation}\n\nImportant Points:\n${notes.points.join('\n')}`;
+    navigator.clipboard?.writeText(text).catch(()=>{});
+    showToast('Notes copied to clipboard.');
+  };
+  document.getElementById('notes-download').onclick = () => {
+    showToast('Downloading notes as .txt...');
+    try{
+      const blob = new Blob([`${notes.topic}\n\n${notes.explanation}\n\nImportant Points:\n- ${notes.points.join('\n- ')}`], {type:'text/plain'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${notes.topic.replace(/\s+/g,'_')}_notes.txt`;
+      a.click();
+    }catch(e){ /* download unsupported in this environment */ }
+  };
+  document.getElementById('notes-ask').onclick = () => { overlay.remove(); goto('tutor'); };
+}
+
+/* ============================================================
+   QUIZ ARENA
+============================================================ */
+let quizSession = null; // {questions, answers, subject, topic}
+function renderQuiz(){
+  if(quizSession && quizSession.active) return renderQuizActive();
+  if(quizSession && quizSession.finished) return renderQuizResults();
+
+  const subject = state.quizPrefillSubject || SUBJECTS[0];
+  const topics = SUBJECT_TOPICS[subject] || [];
+  const topicOptions = topics.map(t=>`<option ${t===state.quizPrefillTopic?'selected':''}>${t}</option>`).join('');
+  const subjectOptions = SUBJECTS.map(s=>`<option ${s===subject?'selected':''}>${s}</option>`).join('');
+  const diffs = ['Easy','Medium','Hard','HOTS'];
+  const counts = [5,10,20,30];
+  const types = ['MCQ','True/False','Mixed'];
+  const preDiff = state.quizPrefillDifficulty || 'Medium';
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:24px;">Quiz Arena</h2><p class="eyebrow-free">Build a quiz from any subject or topic.</p></div>
+    <div class="card" style="max-width:560px;">
+      <div class="form-row"><label>Subject</label>
+        <select id="q-subject">${subjectOptions}</select>
+      </div>
+      <div class="form-row"><label>Topic</label>
+        <select id="q-topic">${topicOptions}</select>
+      </div>
+      <div class="form-row"><label>Difficulty</label>
+        <div class="chip-group" id="q-diff">${diffs.map(d=>`<button class="chip-btn ${d===preDiff?'active':''}" data-val="${d}">${d}</button>`).join('')}</div>
+      </div>
+      <div class="form-row"><label>Number of Questions</label>
+        <div class="chip-group" id="q-count">${counts.map((c,i)=>`<button class="chip-btn ${i===0?'active':''}" data-val="${c}">${c}</button>`).join('')}</div>
+      </div>
+      <div class="form-row"><label>Question Type</label>
+        <div class="chip-group" id="q-type">${types.map((t,i)=>`<button class="chip-btn ${i===0?'active':''}" data-val="${t}">${t}</button>`).join('')}</div>
+      </div>
+      <button class="btn btn-primary btn-block" id="q-generate" style="margin-top:8px;">Generate Quiz</button>
+    </div>
+  </div>`;
+}
+function pickChip(container, target){
+  container.querySelectorAll('.chip-btn').forEach(b=>b.classList.remove('active'));
+  target.classList.add('active');
+}
+function wireQuiz(){
+  if(quizSession && quizSession.active) return wireQuizActive();
+  if(quizSession && quizSession.finished) return wireQuizResults();
+  const subjSel = document.getElementById('q-subject');
+  const topicSel = document.getElementById('q-topic');
+  subjSel.onchange = () => {
+    const topics = SUBJECT_TOPICS[subjSel.value] || [];
+    topicSel.innerHTML = topics.map(t=>`<option>${t}</option>`).join('');
+  };
+  ['q-diff','q-count','q-type'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.querySelectorAll('.chip-btn').forEach(b=> b.onclick = () => pickChip(el, b));
+  });
+  document.getElementById('q-generate').onclick = () => {
+    const subject = subjSel.value, topic = topicSel.value;
+    const diff = document.querySelector('#q-diff .active').getAttribute('data-val');
+    const count = Number(document.querySelector('#q-count .active').getAttribute('data-val'));
+    const qtype = document.querySelector('#q-type .active').getAttribute('data-val');
+    state.quizPrefillSubject = null; state.quizPrefillTopic = null; state.quizPrefillDifficulty = null;
+    // CONNECT REAL API: replace with POST /api/quiz (MCQ Generation prompt)
+    const questions = DemoAI.makeQuiz(subject, topic, diff, count, qtype);
+    quizSession = { active:true, finished:false, subject, topic, diff, questions, current:0, answers:[] };
+    refreshOutlet();
+  };
+}
+function renderQuizActive(){
+  const { questions, current } = quizSession;
+  const q = questions[current];
+  const answered = quizSession.answers[current] !== undefined;
+  const optionsHtml = q.options.map((opt,i)=>{
+    let cls = 'option';
+    if(answered){
+      if(i === q.correct) cls += ' correct';
+      else if(i === quizSession.answers[current]) cls += ' incorrect';
+    } else if(quizSession.answers[current]===i){ cls += ' selected'; }
+    return `<div class="${cls}" data-opt="${i}"><div class="option-letter">${String.fromCharCode(65+i)}</div><div>${opt}</div></div>`;
+  }).join('');
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:22px;">${quizSession.topic} · ${quizSession.diff}</h2><p class="eyebrow-free">Question ${current+1} of ${questions.length}</p></div>
+    <div class="card q-card">
+      <div class="q-number">QUESTION ${current+1}</div>
+      <div class="q-text">${q.q}</div>
+      ${optionsHtml}
+      ${answered ? `<div class="explain-box"><strong>${quizSession.answers[current]===q.correct?'Correct.':'Not quite.'}</strong> ${q.explain}</div>`:''}
+    </div>
+    <div style="display:flex; justify-content:flex-end;">
+      <button class="btn btn-primary" id="q-next" ${answered?'':'disabled style="opacity:.5"'}>${current===questions.length-1?'Finish Quiz':'Next Question'}</button>
+    </div>
+  </div>`;
+}
+function wireQuizActive(){
+  const { questions, current, answers } = quizSession;
+  const q = questions[current];
+  if(answers[current] === undefined){
+    document.querySelectorAll('[data-opt]').forEach(el=>{
+      el.onclick = () => {
+        quizSession.answers[current] = Number(el.getAttribute('data-opt'));
+        refreshOutlet();
+      };
+    });
+  }
+  const nextBtn = document.getElementById('q-next');
+  if(nextBtn && answers[current] !== undefined){
+    nextBtn.onclick = () => {
+      if(current === questions.length - 1){
+        quizSession.active = false;
+        quizSession.finished = true;
+      } else {
+        quizSession.current += 1;
+      }
+      refreshOutlet();
+    };
+  }
+}
+function renderQuizResults(){
+  const { questions, answers, topic } = quizSession;
+  const correctCount = questions.reduce((sum,q,i)=> sum + (answers[i]===q.correct?1:0), 0);
+  const pct = Math.round((correctCount/questions.length)*100);
+  const weak = pct < 90 ? [topic] : [];
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:24px;">Quiz Results</h2></div>
+    <div class="card" style="text-align:center; margin-bottom:18px;">
+      <div class="result-score">${correctCount}/${questions.length}</div>
+      <div class="eyebrow-free">Score: ${pct}%</div>
+      <div style="display:flex; justify-content:center; gap:26px; margin-top:16px;">
+        <div><div class="stat-num" style="color:var(--forest); font-size:22px;">${correctCount}</div><div class="stat-lbl">Correct</div></div>
+        <div><div class="stat-num" style="color:var(--rust); font-size:22px;">${questions.length-correctCount}</div><div class="stat-lbl">Incorrect</div></div>
+      </div>
+    </div>
+    ${weak.length? `<div class="card" style="margin-bottom:18px;"><h3 style="font-size:15px; margin-bottom:10px;">Topics You Need to Revise</h3>${weak.map(t=>`<span class="pill pill-weak">⚠️ ${t}</span>`).join(' ')}</div>` : ''}
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-primary" id="qr-retry">Try Again</button>
+      <button class="btn btn-ghost" id="qr-review">Review Weak Topics</button>
+      <button class="btn btn-ghost" id="qr-new">Generate New Quiz</button>
+    </div>
+  </div>`;
+}
+function wireQuizResults(){
+  document.getElementById('qr-retry').onclick = () => {
+    quizSession.active = true; quizSession.finished = false; quizSession.current = 0; quizSession.answers = [];
+    refreshOutlet();
+  };
+  document.getElementById('qr-review').onclick = () => { quizSession = null; goto('flashcards', {flashPrefillTopic: state.weakTopics[0]}); };
+  document.getElementById('qr-new').onclick = () => { quizSession = null; refreshOutlet(); };
+}
+
+/* ============================================================
+   FLASHCARDS
+============================================================ */
+let flashSession = null;
+function renderFlashcards(){
+  if(!flashSession){
+    const topic = state.flashPrefillTopic || state.weakTopics[0] || 'Cash Management';
+    state.flashPrefillTopic = null;
+    const cards = DemoAI.makeFlashcards(topic, 8);
+    flashSession = { topic, cards, index:0, flipped:false, know:0, revise:0 };
+  }
+  const { cards, index, topic, flipped } = flashSession;
+  const c = cards[index];
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:24px;">Flashcards</h2><p class="eyebrow-free">${topic}</p></div>
+    <div class="flash-wrap">
+      <div class="flash-card ${flipped?'flipped':''}" id="flash-card">
+        <div class="flash-inner">
+          <div class="flash-face front"><div class="flash-tag">Front</div><p>${c.front}</p><div class="flash-hint">Click to reveal</div></div>
+          <div class="flash-face back"><div class="flash-tag">Back</div><p>${c.back}</p></div>
+        </div>
+      </div>
+      <div class="flash-progress">Card ${index+1} of ${cards.length} &nbsp;·&nbsp; ✅ ${flashSession.know} know it &nbsp;·&nbsp; 🔁 ${flashSession.revise} to revise</div>
+      <div class="flash-controls">
+        <button class="btn btn-ghost btn-sm" id="flash-prev">Previous Card</button>
+        <button class="btn btn-ghost btn-sm" id="flash-know">I Know This</button>
+        <button class="btn btn-ghost btn-sm" id="flash-revise">Need Revision</button>
+        <button class="btn btn-primary btn-sm" id="flash-next">Next Card</button>
+      </div>
+    </div>
+  </div>`;
+}
+function wireFlashcards(){
+  document.getElementById('flash-card').onclick = () => { flashSession.flipped = !flashSession.flipped; refreshOutlet(); };
+  document.getElementById('flash-prev').onclick = () => { flashSession.index = Math.max(0, flashSession.index-1); flashSession.flipped=false; refreshOutlet(); };
+  document.getElementById('flash-next').onclick = () => { flashSession.index = Math.min(flashSession.cards.length-1, flashSession.index+1); flashSession.flipped=false; refreshOutlet(); };
+  document.getElementById('flash-know').onclick = () => { flashSession.know++; nextCardAuto(); };
+  document.getElementById('flash-revise').onclick = () => { flashSession.revise++; nextCardAuto(); };
+}
+function nextCardAuto(){
+  if(flashSession.index < flashSession.cards.length-1){ flashSession.index++; flashSession.flipped=false; }
+  refreshOutlet();
+}
+
+/* ============================================================
+   EXAM MODE
+============================================================ */
+function renderExam(){
+  const subjectOptions = SUBJECTS.map(s=>`<option>${s}</option>`).join('');
+  const defaultDate = new Date(Date.now() + 7*86400000).toISOString().slice(0,10);
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:24px;">Exam Mode / Study Planner</h2><p class="eyebrow-free">Tell us your exam and we'll build a day-by-day plan.</p></div>
+    <div class="card" style="max-width:560px;">
+      <div class="form-row"><label>Subject</label><select id="e-subject">${subjectOptions}</select></div>
+      <div class="form-row"><label>Exam Date</label><input type="date" class="textinput" id="e-date" value="${defaultDate}"></div>
+      <div class="form-row"><label>Hours Available Per Day</label>
+        <div class="chip-group" id="e-hours">${[1,2,3,4,5].map((h,i)=>`<button class="chip-btn ${i===2?'active':''}" data-val="${h}">${h}h</button>`).join('')}</div>
+      </div>
+      <div class="form-row"><label>Current Preparation Level</label>
+        <div class="chip-group" id="e-level">${['Beginner','Intermediate','Advanced'].map((l,i)=>`<button class="chip-btn ${i===0?'active':''}" data-val="${l}">${l}</button>`).join('')}</div>
+      </div>
+      <div class="form-row"><label>Topics</label><div id="e-topics"></div></div>
+      <button class="btn btn-primary btn-block" id="e-generate" style="margin-top:6px;">Generate Study Plan</button>
+    </div>
+    <div id="e-plan-out"></div>
+  </div>`;
+}
+function wireExam(){
+  const subjSel = document.getElementById('e-subject');
+  const topicsBox = document.getElementById('e-topics');
+  const renderTopics = () => {
+    const topics = SUBJECT_TOPICS[subjSel.value] || [];
+    topicsBox.innerHTML = topics.map(t=>`
+      <div class="topic-check"><div class="checkbox checked" data-topic="${t}">✓</div><div>${t}</div></div>`).join('');
+    topicsBox.querySelectorAll('[data-topic]').forEach(el=>{
+      el.onclick = () => el.classList.toggle('checked');
+    });
+  };
+  renderTopics();
+  subjSel.onchange = renderTopics;
+  ['e-hours','e-level'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.querySelectorAll('.chip-btn').forEach(b=> b.onclick = () => pickChip(el, b));
+  });
+  document.getElementById('e-generate').onclick = () => {
+    const subject = subjSel.value;
+    const date = document.getElementById('e-date').value;
+    const hours = Number(document.querySelector('#e-hours .active').getAttribute('data-val'));
+    const level = document.querySelector('#e-level .active').getAttribute('data-val');
+    const topics = [...topicsBox.querySelectorAll('.checkbox.checked')].map(el=>el.getAttribute('data-topic'));
+    // CONNECT REAL API: replace with POST /api/study-plan (Study Plan Generation prompt)
+    const plan = DemoAI.makePlan(subject, date, hours, level, topics, state.weakTopics);
+    document.getElementById('e-plan-out').innerHTML = renderPlan(plan, subject);
+  };
+}
+function renderPlan(plan, subject){
+  const days = plan.map(d => `
+    <div class="day-card ${d.final?'final':''}">
+      <div class="day-title">Day ${d.day}${d.final?' · Final Revision':''}</div>
+      <div class="day-topic">${d.topic}</div>
+      <ul class="day-tasks">${d.tasks.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>`).join('');
+  return `
+    <div class="section-divider"></div>
+    <h3 style="font-size:20px; margin-bottom:14px;">${plan.length}-Day ${subject} Plan</h3>
+    ${days}
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">
+      <span class="pill pill-neutral">Daily Goals</span><span class="pill pill-neutral">Revision Sessions</span>
+      <span class="pill pill-neutral">Practice Tests</span><span class="pill pill-weak">Weak Topic Revision</span>
+    </div>`;
+}
+
+/* ============================================================
+   PROGRESS TRACKER
+============================================================ */
+function renderProgress(){
+  const bars = state.performance.map(p => `
+    <div class="bar-row"><div class="bar-label">${p.subject}</div><div class="bar-track"><div class="bar-fill" style="width:${p.pct}%"></div></div><div class="bar-pct">${p.pct}%</div></div>`).join('');
+  const max = Math.max(...state.weeklyTrend);
+  const trend = state.weeklyTrend.map((v,i)=>`<div class="trend-bar" style="height:${(v/max)*100}%;"><span>W${i+1}</span></div>`).join('');
+  const weakHtml = state.weakTopics.map(t=>`<span class="pill pill-weak">⚠️ ${t}</span>`).join(' ');
+  const strongHtml = state.strongTopics.map(t=>`<span class="pill pill-strong">✅ ${t}</span>`).join(' ');
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:24px;">Progress Tracker</h2></div>
+    <div class="grid3" style="margin-bottom:18px;">
+      <div class="card stat-box"><div class="stat-num">${state.overallProgress}%</div><div class="stat-lbl">Overall Progress</div></div>
+      <div class="card stat-box"><div class="stat-num">${state.quizAverage}%</div><div class="stat-lbl">Quiz Average</div></div>
+      <div class="card stat-box"><div class="stat-num">${state.streak}</div><div class="stat-lbl">Study Streak (days)</div></div>
+      <div class="card stat-box"><div class="stat-num">${state.questionsAttempted}</div><div class="stat-lbl">Questions Attempted</div></div>
+      <div class="card stat-box"><div class="stat-num">${state.topicsCompleted}</div><div class="stat-lbl">Topics Completed</div></div>
+      <div class="card stat-box"><div class="stat-num">${state.strongTopics.length}</div><div class="stat-lbl">Strong Topics</div></div>
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="font-size:15px; margin-bottom:14px;">Subject Performance</h3>
+      ${bars}
+    </div>
+    <div class="grid2" style="margin-bottom:18px;">
+      <div class="card"><h3 style="font-size:15px; margin-bottom:10px;">Strong Topics</h3><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start;">${strongHtml}</div></div>
+      <div class="card"><h3 style="font-size:15px; margin-bottom:10px;">Weak Topics</h3><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start;">${weakHtml}</div></div>
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="font-size:15px;">Improvement Over Time</h3>
+      <div class="trend-bars">${trend}</div>
+    </div>
+    <div class="recommend-box">
+      <div class="ic">💡</div>
+      <p>Your quiz performance in <strong>${state.weakTopics[0]}</strong> has fallen below your average. Consider revising this topic before attempting another quiz.</p>
+    </div>
+  </div>`;
+}
+function wireProgress(){}
+
+/* ============================================================
+   SETTINGS
+============================================================ */
+function renderSettings(){
+  return `
+  <div class="page">
+    <div class="page-head"><h2 style="font-size:24px;">Settings</h2></div>
+    <div class="card" style="max-width:560px; margin-bottom:16px;">
+      <h3 style="font-size:15px; margin-bottom:10px;">Student Profile</h3>
+      <div class="form-row"><label>Name</label><input class="textinput" id="s-name" value="${state.studentName}"></div>
+      <button class="btn btn-primary btn-sm" id="s-save">Save changes</button>
+    </div>
+    <div class="card" style="max-width:560px; margin-bottom:16px;">
+      <h3 style="font-size:15px; margin-bottom:6px;">Appearance</h3>
+      <div class="chip-group">
+        <button class="chip-btn ${state.theme==='light'?'active':''}" data-theme="light">Light</button>
+        <button class="chip-btn ${state.theme==='dark'?'active':''}" data-theme="dark">Dark</button>
+        <button class="chip-btn ${state.theme==='system'?'active':''}" data-theme="system">System</button>
+      </div>
+    </div>
+    <div class="card" style="max-width:560px;">
+      <h3 style="font-size:15px; margin-bottom:8px;">AI Engine</h3>
+      <p style="font-size:13.5px; color:var(--ink-soft); line-height:1.6;">
+        This preview runs in <strong>Demo Mode</strong> with realistic mock responses so every screen works without a live key.
+        To go live, deploy the companion backend and set <code style="font-family:var(--font-mono); background:var(--plum-tint); padding:2px 6px; border-radius:5px;">ANTHROPIC_API_KEY</code> as a server-side environment variable — never in this frontend.
+        See the backend README delivered alongside this file for exact steps.
+      </p>
+    </div>
+  </div>`;
+}
+function wireSettings(){
+  document.getElementById('s-save').onclick = () => {
+    state.studentName = document.getElementById('s-name').value || state.studentName;
+    persist(); render(); showToast('Profile saved.');
+  };
+  document.querySelectorAll('[data-theme]').forEach(b=>{
+    b.onclick = () => {
+      state.theme = b.getAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', state.theme === 'system' ? '' : state.theme);
+      persist(); refreshOutlet();
+    };
+  });
+}
+
+/* ---------------------------------------------------------------------
+   TOAST
+--------------------------------------------------------------------- */
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerText = msg;
+  document.body.appendChild(t);
+  setTimeout(()=> t.remove(), 3200);
+}
+
+/* ---------------------------------------------------------------------
+   INIT
+--------------------------------------------------------------------- */
+if(state.theme && state.theme !== 'system') document.documentElement.setAttribute('data-theme', state.theme);
+render();
+</script>
+</body>
+</html>
